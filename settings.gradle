@@ -1,0 +1,2 @@
+rootProject.name='Fan Controller'
+include ':app'
