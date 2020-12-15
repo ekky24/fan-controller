@@ -2,11 +2,13 @@ package com.example.fancontroller;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -18,6 +20,8 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
@@ -36,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     BluetoothDevice mmDevice;
     ConnectedThread btt = null;
     public Handler mHandler;
+    Timer timer;
+    ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +56,9 @@ public class MainActivity extends AppCompatActivity {
 
         txtCounter = (TextView) findViewById(R.id.txt_counter);
 
-        updateUI();
-
+        timer = new Timer();
+        dialog = ProgressDialog.show(this, "",
+                "Connecting. Please wait...", true);
         bta = BluetoothAdapter.getDefaultAdapter();
 
         // if bluetooth is not enabled then ask user to enabling it
@@ -75,31 +82,26 @@ public class MainActivity extends AppCompatActivity {
     public void substractCounter(View view) {
         counter--;
         updateUI();
-        sendData(counter);
     }
 
     public void addCounter(View view) {
         counter++;
         updateUI();
-        sendData(counter);
     }
 
     public void RHCounter(View view) {
         counter = 17;
         updateUI();
-        sendData(counter);
     }
 
     public void RLCounter(View view) {
         counter = 18;
         updateUI();
-        sendData(counter);
     }
 
     public void resetCounter(View view) {
         counter = 0;
         updateUI();
-        sendData(counter);
     }
 
     public void updateUI() {
@@ -124,6 +126,16 @@ public class MainActivity extends AppCompatActivity {
             btnSubtract.setEnabled(true);
             btnAdd.setEnabled(true);
         }
+
+        timer.cancel();
+
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                sendData();
+            }
+        },  3000);
     }
 
     public void initializeBluetooth() {
@@ -166,11 +178,13 @@ public class MainActivity extends AppCompatActivity {
 
             btt = new ConnectedThread(mmSocket,mHandler);
             btt.start();
+            dialog.cancel();
         }
     }
 
-    public void sendData(int number) {
-        String strNumber = String.valueOf(number) + "\n";
+    public void sendData() {
+        String strNumber = String.valueOf(counter) + "\n";
+        Log.i("FAN-APP", "Sending "+counter);
 
         if (mmSocket.isConnected() && btt != null) {
             btt.write(strNumber.getBytes());
@@ -193,7 +207,22 @@ public class MainActivity extends AppCompatActivity {
             }).start();
         }
         else {
-            Toast.makeText(this, "Data can't be sent!", Toast.LENGTH_LONG).show();
+            Log.i("FAN-APP", "Data cannot be sent!");
         }
+    }
+
+    public void refreshConn(View view) {
+        dialog.show();
+
+        new CountDownTimer(1000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+            }
+
+            public void onFinish() {
+                initializeBluetooth();
+            }
+
+        }.start();
     }
 }
