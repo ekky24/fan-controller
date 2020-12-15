@@ -102,8 +102,8 @@
             android:layout_height="80dp"
             android:layout_weight="4"
             android:layout_gravity="center"
-            android:text="OFF"
-            android:textSize="30sp"
+            android:text="N"
+            android:textSize="40sp"
             android:layout_margin="5dp"
             android:onClick="resetCounter"/>
     </LinearLayout>

@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         dialog = ProgressDialog.show(this, "",
                 "Connecting. Please wait...", true);
         bta = BluetoothAdapter.getDefaultAdapter();
+        updateUI();
 
         // if bluetooth is not enabled then ask user to enabling it
         if(!bta.isEnabled()) {
@@ -135,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 sendData();
             }
-        },  3000);
+        },  1000);
     }
 
     public void initializeBluetooth() {
