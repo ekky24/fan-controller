@@ -9,51 +9,113 @@
     tools:context=".MainActivity">
 
     <LinearLayout
+        android:id="@+id/linear_top_row"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true">
-        <Button
-            android:id="@+id/btn_subtract"
+        >
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="70dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="30sp"
-            android:layout_gravity="center"
-            android:layout_margin="5dp"
-            android:text="-"
-            android:onClick="substractCounter"/>
-        <Button
-            android:id="@+id/btn_add"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textSize="25sp"
+                android:text="IN (RPM)"/>
+            <TextView
+                android:id="@+id/txt_in_rpm_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="1000"
+                android:textSize="35sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:gravity="center"/>
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="70dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="30sp"
-            android:layout_gravity="center"
-            android:layout_margin="5dp"
-            android:text="+"
-            android:onClick="addCounter"/>
-        <Button
-            android:id="@+id/btn_rh"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textSize="25sp"
+                android:text="OUT (RPM)"/>
+            <TextView
+                android:id="@+id/txt_out_rpm_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="1200"
+                android:textSize="35sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:gravity="center"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:layout_below="@id/linear_top_row"
+        >
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="70dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="30sp"
-            android:layout_gravity="center"
-            android:layout_margin="5dp"
-            android:text="RH"
-            android:onClick="RHCounter"/>
-        <Button
-            android:id="@+id/btn_rl"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textSize="25sp"
+                android:text="IN (RPM)"/>
+            <TextView
+                android:id="@+id/txt_in_rpm_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="1000"
+                android:textSize="35sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:gravity="center"/>
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="70dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="30sp"
-            android:layout_gravity="center"
-            android:layout_margin="5dp"
-            android:text="RL"
-            android:onClick="RLCounter"/>
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textSize="25sp"
+                android:text="OUT (RPM)"/>
+            <TextView
+                android:id="@+id/txt_out_rpm_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="1200"
+                android:textSize="35sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:gravity="center"/>
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -66,8 +128,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Program :"
-            android:textSize="30sp"
+            android:text="PROGRAM :"
+            android:textSize="35sp"
             android:layout_gravity="center"
             android:gravity="center"/>
         <TextView
@@ -85,25 +147,74 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_above="@id/relative_bottom_row"
+        android:layout_centerHorizontal="true">
+        <Button
+            android:id="@+id/btn_subtract"
+            android:layout_width="0dp"
+            android:layout_height="65dp"
+            android:layout_weight="1"
+            android:textSize="25sp"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:text="-"
+            android:onClick="substractCounter"/>
+        <Button
+            android:id="@+id/btn_add"
+            android:layout_width="0dp"
+            android:layout_height="65dp"
+            android:layout_weight="1"
+            android:textSize="25sp"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:text="+"
+            android:onClick="addCounter"/>
+        <Button
+            android:id="@+id/btn_rh"
+            android:layout_width="0dp"
+            android:layout_height="65dp"
+            android:layout_weight="1"
+            android:textSize="25sp"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:text="RH"
+            android:onClick="RHCounter"/>
+        <Button
+            android:id="@+id/btn_rl"
+            android:layout_width="0dp"
+            android:layout_height="65dp"
+            android:layout_weight="1"
+            android:textSize="25sp"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:text="RL"
+            android:onClick="RLCounter"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/relative_bottom_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true">
         <ImageButton
             android:id="@+id/btn_refresh_conn"
             android:layout_width="0dp"
-            android:layout_height="80dp"
+            android:layout_height="70dp"
             android:layout_weight="2"
             android:src="@drawable/ic_refresh_black_24dp"
-            android:textSize="30sp"
+            android:textSize="25sp"
             android:layout_margin="5dp"
             android:onClick="refreshConn"/>
         <Button
             android:id="@+id/btn_off"
             android:layout_width="0dp"
-            android:layout_height="80dp"
+            android:layout_height="70dp"
             android:layout_weight="4"
             android:layout_gravity="center"
             android:text="N"
-            android:textSize="40sp"
+            android:textSize="35sp"
             android:layout_margin="5dp"
             android:onClick="resetCounter"/>
     </LinearLayout>

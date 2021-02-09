@@ -43,22 +43,51 @@ class ConnectedThread extends Thread {
     public void run(){
         byte[] buffer = new byte[1024];  // buffer store for the stream
         int bytes; // bytes returned from read()
+        long beginMillis = System.currentTimeMillis();
+        String readMessage = "";
+        boolean status = false;
         // Keep listening to the InputStream until an exception occurs
         while (true) {
             try {
-                // Read from the InputStream
                 bytes = mmInStream.available();
+
                 if(bytes != 0) {
-                    SystemClock.sleep(100); //pause and wait for rest of data. Adjust this depending on your sending speed.
-                    bytes = mmInStream.available(); // how many bytes are ready to be read?
-                    bytes = mmInStream.read(buffer, 0, bytes); // record how many bytes we actually read
+                    if(!status) {
+                        beginMillis = System.currentTimeMillis();
+                        status = true;
+                    }
+
+                    bytes = mmInStream.read(buffer);
+
+                    String tempMessage = new String(buffer, 0, bytes);
+                    readMessage += tempMessage;
+                }
+
+                if(System.currentTimeMillis() - beginMillis > 1000 && status) {
+                    readMessage = readMessage.replaceAll("\\n", "");
+                    Log.i("[THREAD-CT]", readMessage);
+                    uih.obtainMessage(RESPONSE_MESSAGE, bytes, -1, readMessage).sendToTarget();
+                    readMessage = "";
+                    status = false;
                 }
             } catch (IOException e) {
-                e.printStackTrace();
-
                 break;
             }
         }
+//        while (true) {
+//            try {
+//                // Read from the InputStream
+//                bytes = mmInStream.available();
+//                if(bytes != 0) {
+//                    SystemClock.sleep(100); //pause and wait for rest of data. Adjust this depending on your sending speed.
+//                    bytes = mmInStream.available(); // how many bytes are ready to be read?
+//                    bytes = mmInStream.read(buffer, 0, bytes); // record how many bytes we actually read
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                break;
+//            }
+//        }
         Log.i("[THREAD-CT]","While loop ended");
     }
 

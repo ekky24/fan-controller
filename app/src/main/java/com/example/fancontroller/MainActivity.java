@@ -20,18 +20,17 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
     Button btnSubtract, btnAdd, btnOff, btnRH, btnRL;
-    TextView txtCounter;
+    TextView txtCounter, txtInRpm1, txtOutRpm1, txtInRpm2, txtOutRpm2;
     int min_counter = 0;
     int max_counter = 16;
     int counter = 0;
 
-    public final static String MODULE_MAC_ESP = "FC:F5:C4:0B:FA:4A";
+    public final static String MODULE_MAC_ESP = "AC:67:B2:38:F9:32";
     public final static String MODULE_MAC_VANNO = "24:FD:52:6C:F7:44";
     public final static int REQUEST_ENABLE_BT = 1;
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
@@ -40,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
     BluetoothDevice mmDevice;
     ConnectedThread btt = null;
     public Handler mHandler;
-    Timer timer;
     ProgressDialog dialog;
 
     @Override
@@ -55,12 +53,14 @@ public class MainActivity extends AppCompatActivity {
         btnRL = (Button) findViewById(R.id.btn_rl);
 
         txtCounter = (TextView) findViewById(R.id.txt_counter);
+        txtInRpm1 = (TextView) findViewById(R.id.txt_in_rpm_1);
+        txtOutRpm1 = (TextView) findViewById(R.id.txt_out_rpm_1);
+        txtInRpm2 = (TextView) findViewById(R.id.txt_in_rpm_2);
+        txtOutRpm2 = (TextView) findViewById(R.id.txt_out_rpm_2);
 
-        timer = new Timer();
         dialog = ProgressDialog.show(this, "",
                 "Connecting. Please wait...", true);
         bta = BluetoothAdapter.getDefaultAdapter();
-        updateUI();
 
         // if bluetooth is not enabled then ask user to enabling it
         if(!bta.isEnabled()) {
@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
         else {
             initializeBluetooth();
         }
+
+        updateUI();
     }
 
     @Override
@@ -128,15 +130,7 @@ public class MainActivity extends AppCompatActivity {
             btnAdd.setEnabled(true);
         }
 
-        timer.cancel();
-
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                sendData();
-            }
-        },  1000);
+        sendData();
     }
 
     public void initializeBluetooth() {
@@ -172,7 +166,12 @@ public class MainActivity extends AppCompatActivity {
                     super.handleMessage(msg);
                     if(msg.what == ConnectedThread.RESPONSE_MESSAGE){
                         String txt = (String)msg.obj;
-                        Toast.makeText(MainActivity.this, txt, Toast.LENGTH_SHORT).show();
+
+                        String[] receivedText = txt.split(",");
+                        txtInRpm1.setText(receivedText[0]);
+                        txtInRpm2.setText(receivedText[1]);
+                        txtOutRpm1.setText(receivedText[2]);
+                        txtOutRpm2.setText(receivedText[3]);
                     }
                 }
             };
