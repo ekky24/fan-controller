@@ -25,7 +25,7 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
     Button btnSubtract, btnAdd, btnOff, btnRH, btnRL;
-    TextView txtCounter, txtInRpm1, txtOutRpm1, txtInRpm2, txtOutRpm2;
+    TextView txtCounter, txtInRpm1, txtOutRpm1;
     int min_counter = 0;
     int max_counter = 16;
     int counter = 0;
@@ -55,8 +55,6 @@ public class MainActivity extends AppCompatActivity {
         txtCounter = (TextView) findViewById(R.id.txt_counter);
         txtInRpm1 = (TextView) findViewById(R.id.txt_in_rpm_1);
         txtOutRpm1 = (TextView) findViewById(R.id.txt_out_rpm_1);
-        txtInRpm2 = (TextView) findViewById(R.id.txt_in_rpm_2);
-        txtOutRpm2 = (TextView) findViewById(R.id.txt_out_rpm_2);
 
         dialog = ProgressDialog.show(this, "",
                 "Connecting. Please wait...", true);
@@ -169,9 +167,7 @@ public class MainActivity extends AppCompatActivity {
 
                         String[] receivedText = txt.split(",");
                         txtInRpm1.setText(receivedText[0]);
-                        txtInRpm2.setText(receivedText[1]);
-                        txtOutRpm1.setText(receivedText[2]);
-                        txtOutRpm2.setText(receivedText[3]);
+                        txtOutRpm1.setText(receivedText[1]);
                     }
                 }
             };
