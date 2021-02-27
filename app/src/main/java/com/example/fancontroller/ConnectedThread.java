@@ -60,12 +60,14 @@ class ConnectedThread extends Thread {
                     bytes = mmInStream.read(buffer);
 
                     String tempMessage = new String(buffer, 0, bytes);
-                    readMessage += tempMessage;
+
+                    readMessage = tempMessage;
                 }
 
                 if(System.currentTimeMillis() - beginMillis > 1000 && status) {
-                    readMessage = readMessage.replaceAll("\\n", "");
-                    Log.i("[THREAD-CT]", readMessage);
+//                    readMessage = readMessage.replaceAll("\\n", "");
+                    readMessage = readMessage.replaceAll(" ", "");
+
                     uih.obtainMessage(RESPONSE_MESSAGE, bytes, -1, readMessage).sendToTarget();
                     readMessage = "";
                     status = false;

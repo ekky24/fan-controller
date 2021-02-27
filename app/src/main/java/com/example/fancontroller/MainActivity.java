@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     ConnectedThread btt = null;
     public Handler mHandler;
     ProgressDialog dialog;
+    Timer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +58,13 @@ public class MainActivity extends AppCompatActivity {
         txtInRpm1 = (TextView) findViewById(R.id.txt_in_rpm_1);
         txtOutRpm1 = (TextView) findViewById(R.id.txt_out_rpm_1);
 
+        timer = new Timer();
+
         dialog = ProgressDialog.show(this, "",
                 "Connecting. Please wait...", true);
         bta = BluetoothAdapter.getDefaultAdapter();
+
+        updateUI();
 
         // if bluetooth is not enabled then ask user to enabling it
         if(!bta.isEnabled()) {
@@ -68,8 +74,6 @@ public class MainActivity extends AppCompatActivity {
         else {
             initializeBluetooth();
         }
-
-        updateUI();
     }
 
     @Override
@@ -128,7 +132,15 @@ public class MainActivity extends AppCompatActivity {
             btnAdd.setEnabled(true);
         }
 
-        sendData();
+        timer.cancel();
+
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                sendData();
+            }
+        },  1000);
     }
 
     public void initializeBluetooth() {
@@ -164,10 +176,18 @@ public class MainActivity extends AppCompatActivity {
                     super.handleMessage(msg);
                     if(msg.what == ConnectedThread.RESPONSE_MESSAGE){
                         String txt = (String)msg.obj;
+                        Log.i("[TXT]", txt);
 
-                        String[] receivedText = txt.split(",");
-                        txtInRpm1.setText(receivedText[0]);
-                        txtOutRpm1.setText(receivedText[1]);
+                        String[] receivedText = txt.split("\\n");
+                        String latestText = receivedText[receivedText.length-1];
+                        String[] preprocessedText = latestText.split(",");
+
+                        if(preprocessedText.length == 2) {
+                            txtInRpm1.setText(preprocessedText[0].replaceAll("[^\\d]", ""));
+                            txtOutRpm1.setText(preprocessedText[1].replaceAll("[^\\d]", ""));
+                            Log.i("[RECEIVEIN]", preprocessedText[0]);
+                            Log.i("[RECEIVEOUT]", preprocessedText[1]);
+                        }
                     }
                 }
             };
@@ -209,6 +229,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void refreshConn(View view) {
         dialog.show();
+        btt.cancel();
 
         new CountDownTimer(1000, 1000) {
 
@@ -216,6 +237,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             public void onFinish() {
+                updateUI();
                 initializeBluetooth();
             }
 

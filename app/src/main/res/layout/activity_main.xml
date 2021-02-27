@@ -82,7 +82,7 @@
                     android:layout_width="80dp"
                     android:layout_height="50dp"
                     android:textColor="#fff"
-                    android:text="1000"
+                    android:text="0"
                     android:background="@drawable/layout_bg"
                     android:textSize="20sp"
                     android:textStyle="bold"
@@ -107,7 +107,7 @@
                     android:layout_width="80dp"
                     android:layout_height="50dp"
                     android:textColor="#fff"
-                    android:text="1200"
+                    android:text="0"
                     android:background="@drawable/layout_bg"
                     android:textSize="20sp"
                     android:textStyle="bold"
@@ -142,6 +142,15 @@
                 android:layout_gravity="center"
                 android:gravity="center"/>
         </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:text="By Hadi Iveco"
+            android:textSize="15sp"
+            android:layout_gravity="center"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"/>
     </RelativeLayout>
 
     <LinearLayout
