@@ -17,35 +17,35 @@
         android:gravity="center">
         <Button
             android:id="@+id/btn_add"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:background="@drawable/layout_bg"
             android:textColor="#fff"
-            android:textSize="20sp"
+            android:textSize="15sp"
             android:layout_gravity="start"
             android:layout_marginTop="10dp"
             android:text="+"
             android:onClick="addCounter"/>
         <Button
             android:id="@+id/btn_subtract"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:background="@drawable/layout_bg"
             android:textColor="#fff"
-            android:textSize="20sp"
+            android:textSize="15sp"
             android:layout_gravity="start"
             android:layout_marginTop="10dp"
             android:text="-"
             android:onClick="substractCounter"/>
         <Button
             android:id="@+id/btn_off"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:background="@drawable/layout_bg"
             android:textColor="#fff"
             android:layout_gravity="start"
             android:text="N"
-            android:textSize="20sp"
+            android:textSize="15sp"
             android:layout_marginTop="10dp"
             android:onClick="resetCounter"/>
     </LinearLayout>
@@ -74,17 +74,17 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:textSize="20sp"
+                    android:textSize="15sp"
                     android:textColor="#fff"
                     android:text="IN (RPM)"/>
                 <TextView
                     android:id="@+id/txt_in_rpm_1"
                     android:layout_width="80dp"
-                    android:layout_height="50dp"
+                    android:layout_height="40dp"
                     android:textColor="#fff"
                     android:text="0"
                     android:background="@drawable/layout_bg"
-                    android:textSize="20sp"
+                    android:textSize="15sp"
                     android:textStyle="bold"
                     android:layout_gravity="center"
                     android:gravity="center"/>
@@ -99,17 +99,17 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:textSize="20sp"
+                    android:textSize="15sp"
                     android:textColor="#fff"
                     android:text="OUT (RPM)"/>
                 <TextView
                     android:id="@+id/txt_out_rpm_1"
                     android:layout_width="80dp"
-                    android:layout_height="50dp"
+                    android:layout_height="40dp"
                     android:textColor="#fff"
                     android:text="0"
                     android:background="@drawable/layout_bg"
-                    android:textSize="20sp"
+                    android:textSize="15sp"
                     android:textStyle="bold"
                     android:layout_gravity="center"
                     android:gravity="center"/>
@@ -137,20 +137,59 @@
                 android:background="@drawable/layout_bg"
                 android:text="0"
                 android:textColor="#fff"
-                android:textSize="50sp"
+                android:textSize="40sp"
                 android:textStyle="bold"
                 android:layout_gravity="center"
                 android:gravity="center"/>
         </LinearLayout>
-        <TextView
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#fff"
-            android:text="By Hadi Iveco"
-            android:textSize="15sp"
-            android:layout_gravity="center"
             android:layout_alignParentBottom="true"
-            android:gravity="center"/>
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginBottom="5dp"
+                android:orientation="horizontal">
+                <ImageButton
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/layout_bg"
+                    android:textColor="#fff"
+                    android:src="@drawable/ic_baseline_fiber_manual_record_24"
+                    android:textSize="15sp"
+                    android:layout_marginRight="10dp"
+                    android:onClick="recordData"/>
+                <ImageButton
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/layout_bg"
+                    android:textColor="#fff"
+                    android:src="@drawable/ic_baseline_arrow_downward_24"
+                    android:textSize="15sp"
+                    android:layout_marginRight="10dp"
+                    android:onClick="downloadData"/>
+                <ImageButton
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/layout_bg"
+                    android:textColor="#fff"
+                    android:src="@drawable/ic_baseline_clear_all_24"
+                    android:textSize="15sp"
+                    android:onClick="clearData"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="By Hadi Iveco"
+                android:textColor="#fff"
+                android:textSize="15sp" />
+        </LinearLayout>
     </RelativeLayout>
 
     <LinearLayout
@@ -161,34 +200,34 @@
         android:gravity="center">
         <Button
             android:id="@+id/btn_rh"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:background="@drawable/layout_bg"
             android:textColor="#fff"
-            android:textSize="20sp"
+            android:textSize="15sp"
             android:layout_gravity="end"
             android:layout_marginTop="10dp"
             android:text="RH"
             android:onClick="RHCounter"/>
         <Button
             android:id="@+id/btn_rl"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:background="@drawable/layout_bg"
             android:textColor="#fff"
-            android:textSize="20sp"
+            android:textSize="15sp"
             android:layout_gravity="end"
             android:layout_marginTop="10dp"
             android:text="RL"
             android:onClick="RLCounter"/>
         <ImageButton
             android:id="@+id/btn_refresh_conn"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:background="@drawable/layout_bg"
             android:textColor="#fff"
             android:src="@drawable/ic_refresh_black_24dp"
-            android:textSize="20sp"
+            android:textSize="15sp"
             android:layout_marginTop="10dp"
             android:layout_gravity="end"
             android:onClick="refreshConn"/>
