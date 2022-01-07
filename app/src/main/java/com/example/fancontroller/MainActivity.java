@@ -270,8 +270,7 @@ public class MainActivity extends AppCompatActivity implements PDFUtility.OnDocu
 
     public void downloadData(View view) {
         String curr_timeStamp = new SimpleDateFormat("yyyyMMdd_HHmm").format(new Date());
-        String path = Environment.getExternalStorageDirectory().toString() + "/iveco_data_" + curr_timeStamp + ".pdf";
-        Toast.makeText(MainActivity.this, path, Toast.LENGTH_SHORT).show();
+        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/iveco_data_" + curr_timeStamp + ".pdf";
 
         ArrayList<IvecoData> dbResults = new ArrayList<>();
         Cursor cursor = dbHandler.fetch();

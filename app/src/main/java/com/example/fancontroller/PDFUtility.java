@@ -82,7 +82,6 @@ final class PDFUtility
         document.add(createDataTable(items));
 
         addEmptyLine(document,2);
-        document.add(createSignBox());
 
         document.close();
 
@@ -151,9 +150,9 @@ final class PDFUtility
 
     private static PdfPTable createDataTable(ArrayList<IvecoData> dataTable) throws DocumentException
     {
-        PdfPTable table1 = new PdfPTable(2);
+        PdfPTable table1 = new PdfPTable(3);
         table1.setWidthPercentage(100);
-        table1.setWidths(new float[]{1f,2f});
+        table1.setWidths(new float[]{2f,1f,1f});
         table1.setHeaderRows(1);
         table1.getDefaultCell().setVerticalAlignment(Element.ALIGN_CENTER);
         table1.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
