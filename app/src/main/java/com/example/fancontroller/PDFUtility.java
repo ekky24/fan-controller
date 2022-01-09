@@ -119,9 +119,9 @@ final class PDFUtility
 
     private static void addHeader(Context mContext, Document document) throws Exception
     {
-        PdfPTable table = new PdfPTable(3);
+        PdfPTable table = new PdfPTable(1);
         table.setWidthPercentage(100);
-        table.setWidths(new float[]{2,7,2});
+        table.setWidths(new float[]{7});
         table.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
         table.getDefaultCell().setVerticalAlignment(Element.ALIGN_CENTER);
         table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -193,7 +193,7 @@ final class PDFUtility
             IvecoData ivecoData = dataTable.get(i);
 
             cell = new PdfPCell(new Phrase(ivecoData.getGearPos(), FONT_CELL));
-            cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cell.setPaddingLeft(left_right_Padding);
             cell.setPaddingRight(left_right_Padding);

@@ -38,12 +38,16 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(OUT_RPM_COL, outRpm);
 
         db.insert(TABLE_NAME, null, values);
+        db.close();
     }
 
     public Cursor fetch() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.query(TABLE_NAME, null,
                 null, null, null, null, null);
+        cursor.moveToFirst();
+
+        db.close();
         return cursor;
     }
 
@@ -52,6 +56,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
         String query = "DELETE FROM " + TABLE_NAME;
         db.execSQL(query);
+        db.close();
     }
 
     public void closeDbConn() {

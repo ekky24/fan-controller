@@ -1,17 +1,24 @@
 package com.example.fancontroller;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
@@ -270,11 +277,11 @@ public class MainActivity extends AppCompatActivity implements PDFUtility.OnDocu
 
     public void downloadData(View view) {
         String curr_timeStamp = new SimpleDateFormat("yyyyMMdd_HHmm").format(new Date());
-        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/iveco_data_" + curr_timeStamp + ".pdf";
+        String filename = "iveco_data_" + curr_timeStamp + ".pdf";
+        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/" + filename;
 
         ArrayList<IvecoData> dbResults = new ArrayList<>();
         Cursor cursor = dbHandler.fetch();
-        cursor.moveToFirst();
 
         while(!cursor.isAfterLast()) {
             String gearPos = cursor.getString(cursor.getColumnIndex(DBHandler.GEAR_POS_COL));
@@ -307,6 +314,41 @@ public class MainActivity extends AppCompatActivity implements PDFUtility.OnDocu
             intent.setData(uri);
             startActivity(intent);
         }
+
+        addDownloadNotification(filename, path);
+    }
+
+    public void addDownloadNotification(String filename, String path) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Uri uri = Uri.parse(path);
+        intent.setDataAndType(uri, "application/pdf");
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, TAG)
+                .setSmallIcon(R.drawable.ic_baseline_arrow_downward_24)
+                .setContentTitle(filename + "  downloaded")
+                .setContentText("The recorded data has been downloaded")
+                .setAutoCancel(true)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(pendingIntent);
+
+        NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            String channelId = TAG;
+            NotificationChannel channel = new NotificationChannel(
+                    channelId,
+                    "Downloaded Data",
+                    NotificationManager.IMPORTANCE_HIGH);
+            notificationManager.createNotificationChannel(channel);
+            builder.setChannelId(channelId);
+        }
+
+        notificationManager.notify(0, builder.build());
     }
 
     public void clearData(View view) {
