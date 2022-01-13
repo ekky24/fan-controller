@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class DBHandler extends SQLiteOpenHelper {
     private static final String DB_NAME = "db_iveco";
     private static final int DB_VERSION = 1;
@@ -14,6 +17,7 @@ public class DBHandler extends SQLiteOpenHelper {
     static final String GEAR_POS_COL = "gear_pos";
     static final String IN_RPM_COL = "in_rpm";
     static final String OUT_RPM_COL = "out_rpm";
+    static final String TIMESTAMP_COL = "timestamp";
 
     public DBHandler(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -25,17 +29,22 @@ public class DBHandler extends SQLiteOpenHelper {
                 + ID_COL + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + GEAR_POS_COL + " TEXT,"
                 + IN_RPM_COL + " TEXT,"
-                + OUT_RPM_COL + " TEXT)";
+                + OUT_RPM_COL + " TEXT,"
+                + TIMESTAMP_COL + " TEXT)";
         db.execSQL(query);
     }
 
     public void addNewData(String gearPos, String inRpm, String outRpm) {
         SQLiteDatabase db = this.getWritableDatabase();
 
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        String curr_datetime = sdf.format(new Date());
+
         ContentValues values = new ContentValues();
         values.put(GEAR_POS_COL, gearPos);
         values.put(IN_RPM_COL, inRpm);
         values.put(OUT_RPM_COL, outRpm);
+        values.put(TIMESTAMP_COL, curr_datetime);
 
         db.insert(TABLE_NAME, null, values);
         db.close();

@@ -150,9 +150,9 @@ final class PDFUtility
 
     private static PdfPTable createDataTable(ArrayList<IvecoData> dataTable) throws DocumentException
     {
-        PdfPTable table1 = new PdfPTable(3);
+        PdfPTable table1 = new PdfPTable(4);
         table1.setWidthPercentage(100);
-        table1.setWidths(new float[]{2f,1f,1f});
+        table1.setWidths(new float[]{1f,1f,1f,2f});
         table1.setHeaderRows(1);
         table1.getDefaultCell().setVerticalAlignment(Element.ALIGN_CENTER);
         table1.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -172,6 +172,12 @@ final class PDFUtility
             table1.addCell(cell);
 
             cell = new PdfPCell(new Phrase("RPM OUT", FONT_COLUMN));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell.setPadding(4f);
+            table1.addCell(cell);
+
+            cell = new PdfPCell(new Phrase("TIMESTAMP", FONT_COLUMN));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cell.setPadding(4f);
@@ -213,6 +219,16 @@ final class PDFUtility
             table1.addCell(cell);
 
             cell = new PdfPCell(new Phrase(ivecoData.getOutRpm(), FONT_CELL));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell.setPaddingLeft(left_right_Padding);
+            cell.setPaddingRight(left_right_Padding);
+            cell.setPaddingTop(top_bottom_Padding);
+            cell.setPaddingBottom(top_bottom_Padding);
+            cell.setBackgroundColor(cell_color);
+            table1.addCell(cell);
+
+            cell = new PdfPCell(new Phrase(ivecoData.getTimestamp(), FONT_CELL));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cell.setPaddingLeft(left_right_Padding);
