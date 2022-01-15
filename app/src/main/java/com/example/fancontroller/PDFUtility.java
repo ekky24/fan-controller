@@ -38,8 +38,8 @@ import androidx.core.content.ContextCompat;
 final class PDFUtility
 {
     private static final String TAG = PDFUtility.class.getSimpleName();
-    private static Font FONT_TITLE     = new Font(Font.FontFamily.TIMES_ROMAN, 16, Font.BOLD);
-    private static Font FONT_SUBTITLE      = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.NORMAL);
+    private static Font FONT_TITLE     = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+    private static Font FONT_SUBTITLE      = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
 
     private static Font FONT_CELL      = new Font(Font.FontFamily.TIMES_ROMAN,  12, Font.NORMAL);
     private static Font FONT_COLUMN    = new Font(Font.FontFamily.TIMES_ROMAN,  14, Font.NORMAL);
@@ -49,7 +49,9 @@ final class PDFUtility
         void onPDFDocumentClose(File file);
     }
 
-    static void createPdf(@NonNull Context mContext, OnDocumentClose mCallback, ArrayList<IvecoData> items, @NonNull String filePath, boolean isPortrait) throws Exception
+    static void createPdf(@NonNull Context mContext, OnDocumentClose mCallback,
+                          ArrayList<IvecoData> items, @NonNull String filePath,
+                          boolean isPortrait, String unitNumber, String typeTransmission) throws Exception
     {
         if(filePath.equals(""))
         {
@@ -76,8 +78,8 @@ final class PDFUtility
 
         setMetaData(document);
 
-        addHeader(mContext,document);
-        addEmptyLine(document, 3);
+        addHeader(mContext, document, unitNumber, typeTransmission);
+        addEmptyLine(document, 1);
 
         document.add(createDataTable(items));
 
@@ -117,7 +119,8 @@ final class PDFUtility
         document.addHeader("Hadi","IVECO");
     }
 
-    private static void addHeader(Context mContext, Document document) throws Exception
+    private static void addHeader(Context mContext, Document document, String unitNumber,
+                                  String typeTransmission) throws Exception
     {
         PdfPTable table = new PdfPTable(1);
         table.setWidthPercentage(100);
@@ -135,13 +138,19 @@ final class PDFUtility
             cell.setPadding(8f);
             cell.setUseAscender(true);
 
-            Paragraph temp = new Paragraph("RECORDED DATA" ,FONT_TITLE);
+            Paragraph temp = new Paragraph("Performance Transmission Iveco" ,FONT_TITLE);
             temp.setAlignment(Element.ALIGN_CENTER);
             cell.addElement(temp);
 
-//            temp = new Paragraph("I am Subtitle" ,FONT_SUBTITLE);
-//            temp.setAlignment(Element.ALIGN_CENTER);
-//            cell.addElement(temp);
+            document.add(new Paragraph(" "));
+
+            temp = new Paragraph("Unit Number : " + unitNumber ,FONT_SUBTITLE);
+            temp.setAlignment(Element.ALIGN_LEFT);
+            cell.addElement(temp);
+
+            temp = new Paragraph("Type Transmission : " + typeTransmission ,FONT_SUBTITLE);
+            temp.setAlignment(Element.ALIGN_LEFT);
+            cell.addElement(temp);
 
             table.addCell(cell);
         }

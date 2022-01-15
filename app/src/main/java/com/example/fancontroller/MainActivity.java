@@ -6,6 +6,7 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -14,6 +15,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -27,8 +29,10 @@ import android.os.Looper;
 import android.os.Message;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,6 +51,10 @@ public class MainActivity extends AppCompatActivity implements PDFUtility.OnDocu
     Button btnSubtract, btnAdd, btnOff, btnRH, btnRL;
     ImageButton btnRefreshConn;
     TextView txtCounter, txtInRpm1, txtOutRpm1;
+    EditText editUnitNumber, editTypeTransmission;
+    AlertDialog.Builder downloadBuilder;
+    LayoutInflater downloadInflater;
+    View downloadDialogView;
     int min_counter = 0;
     int max_counter = 16;
     int counter = 0;
@@ -88,11 +96,12 @@ public class MainActivity extends AppCompatActivity implements PDFUtility.OnDocu
         timer = new Timer();
         dbHandler = new DBHandler(MainActivity.this);
 
-        dialog = ProgressDialog.show(this, "",
-                "Connecting. Please wait...", true);
-        bta = BluetoothAdapter.getDefaultAdapter();
+        dialog = new ProgressDialog(this);
+        dialog.setTitle("");
+        dialog.setMessage("Connecting. Please wait...");
+        dialog.setIndeterminate(true);
 
-        updateUI();
+        bta = BluetoothAdapter.getDefaultAdapter();
 
         try {
             // if bluetooth is not enabled then ask user to enabling it
@@ -106,7 +115,9 @@ public class MainActivity extends AppCompatActivity implements PDFUtility.OnDocu
             }
         }
         catch (Exception e) {
+            updateUI();
             initializeBluetooth();
+
             Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_SHORT).show();
         }
     }
@@ -273,6 +284,46 @@ public class MainActivity extends AppCompatActivity implements PDFUtility.OnDocu
         }
     }
 
+    public void executeDownload(String unitNumber, String typeTransmission) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            setPermission();
+            return;
+        }
+
+        String curr_timeStamp = new SimpleDateFormat("yyyyMMdd_HHmm").format(new Date());
+        String filename = "iveco_data_" + curr_timeStamp + ".pdf";
+        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/" + filename;
+
+        ArrayList<IvecoData> dbResults = new ArrayList<>();
+        Cursor cursor = dbHandler.fetch();
+
+        while(!cursor.isAfterLast()) {
+            String gearPos = cursor.getString(cursor.getColumnIndex(DBHandler.GEAR_POS_COL));
+            String inRpm = cursor.getString(cursor.getColumnIndex(DBHandler.IN_RPM_COL));
+            String outRpm = cursor.getString(cursor.getColumnIndex(DBHandler.OUT_RPM_COL));
+            String timestamp = cursor.getString(cursor.getColumnIndex(DBHandler.TIMESTAMP_COL));
+
+            IvecoData ivecoData = new IvecoData(gearPos, inRpm, outRpm, timestamp);
+            dbResults.add(ivecoData);
+            cursor.moveToNext();
+        }
+
+        if(dbResults.isEmpty()) {
+            Toast.makeText(this, "Data is unavailable", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        try {
+            PDFUtility.createPdf(this,MainActivity.this, dbResults, path,true, unitNumber, typeTransmission);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG,"Error Creating Pdf");
+            Toast.makeText(this, "Error Creating Pdf", Toast.LENGTH_SHORT).show();
+        }
+        addDownloadNotification(filename, path);
+    }
+
     public void refreshConn(View view) {
         dialog.show();
 
@@ -303,43 +354,50 @@ public class MainActivity extends AppCompatActivity implements PDFUtility.OnDocu
     }
 
     public void downloadData(View view) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            setPermission();
-            return;
-        }
+        downloadBuilder = new AlertDialog.Builder(MainActivity.this);
+        downloadInflater = getLayoutInflater();
+        downloadDialogView = downloadInflater.inflate(R.layout.dialog_download, null);
 
-        String curr_timeStamp = new SimpleDateFormat("yyyyMMdd_HHmm").format(new Date());
-        String filename = "iveco_data_" + curr_timeStamp + ".pdf";
-        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/" + filename;
+        downloadBuilder.setView(downloadDialogView);
+        downloadBuilder.setCancelable(true);
+        downloadBuilder.setTitle("Additional Data");
 
-        ArrayList<IvecoData> dbResults = new ArrayList<>();
-        Cursor cursor = dbHandler.fetch();
+        editUnitNumber = (EditText) downloadDialogView.findViewById(R.id.edit_unit_number);
+        editTypeTransmission = (EditText) downloadDialogView.findViewById(R.id.edit_type_transmission);
 
-        while(!cursor.isAfterLast()) {
-            String gearPos = cursor.getString(cursor.getColumnIndex(DBHandler.GEAR_POS_COL));
-            String inRpm = cursor.getString(cursor.getColumnIndex(DBHandler.IN_RPM_COL));
-            String outRpm = cursor.getString(cursor.getColumnIndex(DBHandler.OUT_RPM_COL));
-            String timestamp = cursor.getString(cursor.getColumnIndex(DBHandler.TIMESTAMP_COL));
+        downloadBuilder.setPositiveButton("Download", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int which) {
+                Boolean isUnitNumber = false;
+                Boolean isTransmissionType = false;
 
-            IvecoData ivecoData = new IvecoData(gearPos, inRpm, outRpm, timestamp);
-            dbResults.add(ivecoData);
-            cursor.moveToNext();
-        }
+                String strUnitNumber = editUnitNumber.getText().toString();
+                String strTypeTransmission = editTypeTransmission.getText().toString();
 
-        if(dbResults.isEmpty()) {
-            Toast.makeText(this, "Data is unavailable", Toast.LENGTH_LONG).show();
-            return;
-        }
+                if(!strUnitNumber.equalsIgnoreCase("")) {
+                    isUnitNumber = true;
+                }
+                if(!strTypeTransmission.equalsIgnoreCase("")) {
+                    isTransmissionType = true;
+                }
 
-        try {
-            PDFUtility.createPdf(this,MainActivity.this, dbResults, path,true);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            Log.e(TAG,"Error Creating Pdf");
-            Toast.makeText(this, "Error Creating Pdf", Toast.LENGTH_SHORT).show();
-        }
-        addDownloadNotification(filename, path);
+                if((!isUnitNumber) || (!isTransmissionType)) {
+                    Toast.makeText(MainActivity.this, "Please enter all the fields", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    executeDownload(strUnitNumber, strTypeTransmission);
+                }
+                dialogInterface.dismiss();
+            }
+        });
+
+        downloadBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int which) {
+                dialogInterface.dismiss();
+            }
+        });
+        downloadBuilder.show();
     }
 
     public void addDownloadNotification(String filename, String path) {
@@ -376,8 +434,30 @@ public class MainActivity extends AppCompatActivity implements PDFUtility.OnDocu
     }
 
     public void clearData(View view) {
-        Toast.makeText(MainActivity.this, "Cleared!", Toast.LENGTH_SHORT).show();
-        dbHandler.clearData();
+        AlertDialog.Builder clearBuilder = new AlertDialog.Builder(this);
+
+        clearBuilder.setTitle("Confirmation");
+        clearBuilder.setMessage("Are you sure you want to clear the recorded data?");
+
+        clearBuilder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialogInterface, int which) {
+                dialogInterface.dismiss();
+                dbHandler.clearData();
+                Toast.makeText(MainActivity.this, "Cleared!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        clearBuilder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialogInterface, int which) {
+                dialogInterface.dismiss();
+            }
+        });
+
+        AlertDialog alert = clearBuilder.create();
+        alert.show();
     }
 
     @Override

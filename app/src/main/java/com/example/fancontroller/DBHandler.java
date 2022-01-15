@@ -37,7 +37,7 @@ public class DBHandler extends SQLiteOpenHelper {
     public void addNewData(String gearPos, String inRpm, String outRpm) {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         String curr_datetime = sdf.format(new Date());
 
         ContentValues values = new ContentValues();

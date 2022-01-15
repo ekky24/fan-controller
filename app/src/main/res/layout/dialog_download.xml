@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="25dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:text="Unit Number :" />
+    <EditText
+        android:id="@+id/edit_unit_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter unit number"
+        android:background="@android:drawable/editbox_background"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="10dp"
+        android:text="Type Transmission :" />
+    <EditText
+        android:id="@+id/edit_type_transmission"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter type transmission"
+        android:background="@android:drawable/editbox_background"/>
+
+</LinearLayout>
