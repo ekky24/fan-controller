@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:padding="20dp"
     android:layout_height="match_parent"
-    android:weightSum="6"
+    android:weightSum="8"
     android:background="@drawable/blue"
     tools:context=".MainActivity">
 
@@ -50,6 +50,62 @@
             android:onClick="resetCounter"/>
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textSize="15sp"
+                android:textColor="#fff"
+                android:text="PRES 1 (BAR)"/>
+            <TextView
+                android:id="@+id/txt_pressure_1"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:textColor="#fff"
+                android:text="0"
+                android:background="@drawable/layout_bg"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:gravity="center"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textSize="15sp"
+                android:textColor="#fff"
+                android:text="PRES 2 (BAR)"/>
+            <TextView
+                android:id="@+id/txt_pressure_2"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:textColor="#fff"
+                android:text="0"
+                android:background="@drawable/layout_bg"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:gravity="center"/>
+        </LinearLayout>
+    </LinearLayout>
+
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -79,6 +135,31 @@
                     android:text="IN (RPM)"/>
                 <TextView
                     android:id="@+id/txt_in_rpm_1"
+                    android:layout_width="80dp"
+                    android:layout_height="40dp"
+                    android:textColor="#fff"
+                    android:text="0"
+                    android:background="@drawable/layout_bg"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:layout_gravity="center"
+                    android:gravity="center"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textSize="15sp"
+                    android:textColor="#fff"
+                    android:text="TEMP (C)"/>
+                <TextView
+                    android:id="@+id/txt_temp"
                     android:layout_width="80dp"
                     android:layout_height="40dp"
                     android:textColor="#fff"
@@ -191,6 +272,62 @@
                 android:textSize="15sp" />
         </LinearLayout>
     </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textSize="15sp"
+                android:textColor="#fff"
+                android:text="PRES 3 (BAR)"/>
+            <TextView
+                android:id="@+id/txt_pressure_3"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:textColor="#fff"
+                android:text="0"
+                android:background="@drawable/layout_bg"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:gravity="center"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textSize="15sp"
+                android:textColor="#fff"
+                android:text="PRES 4 (BAR)"/>
+            <TextView
+                android:id="@+id/txt_pressure_4"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:textColor="#fff"
+                android:text="0"
+                android:background="@drawable/layout_bg"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:gravity="center"/>
+        </LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="0dp"

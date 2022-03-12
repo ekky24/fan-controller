@@ -50,8 +50,8 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity implements PDFUtility.OnDocumentClose {
     Button btnSubtract, btnAdd, btnOff, btnRH, btnRL;
     ImageButton btnRefreshConn;
-    TextView txtCounter, txtInRpm1, txtOutRpm1;
-    EditText editUnitNumber, editTypeTransmission;
+    TextView txtCounter, txtInRpm1, txtOutRpm1, txtTemp, txtPres1, txtPres2, txtPres3, txtPres4;
+    EditText editCustomerName, editLocation, editPONumber, editUnitNumber, editTypeTransmission;
     AlertDialog.Builder downloadBuilder;
     LayoutInflater downloadInflater;
     View downloadDialogView;
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements PDFUtility.OnDocu
     int max_counter = 16;
     int counter = 0;
 
-    public final static String MODULE_MAC_ESP = "AC:67:B2:38:F9:32";
+    public final static String MODULE_MAC_ESP = "7C:9E:BD:F1:58:F2";
     public final static String MODULE_MAC_VANNO = "24:FD:52:6C:F7:44";
     public final static int REQUEST_ENABLE_BT = 1;
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
@@ -92,6 +92,11 @@ public class MainActivity extends AppCompatActivity implements PDFUtility.OnDocu
         txtCounter = (TextView) findViewById(R.id.txt_counter);
         txtInRpm1 = (TextView) findViewById(R.id.txt_in_rpm_1);
         txtOutRpm1 = (TextView) findViewById(R.id.txt_out_rpm_1);
+        txtTemp = (TextView) findViewById(R.id.txt_temp);
+        txtPres1 = (TextView) findViewById(R.id.txt_pressure_1);
+        txtPres2 = (TextView) findViewById(R.id.txt_pressure_2);
+        txtPres3 = (TextView) findViewById(R.id.txt_pressure_3);
+        txtPres4 = (TextView) findViewById(R.id.txt_pressure_4);
 
         timer = new Timer();
         dbHandler = new DBHandler(MainActivity.this);
@@ -239,8 +244,25 @@ public class MainActivity extends AppCompatActivity implements PDFUtility.OnDocu
                             if(preprocessedText.length == 2) {
                                 txtInRpm1.setText(preprocessedText[0].replaceAll("[^\\d]", ""));
                                 txtOutRpm1.setText(preprocessedText[1].replaceAll("[^\\d]", ""));
-                                Log.i("[RECEIVEIN]", preprocessedText[0]);
-                                Log.i("[RECEIVEOUT]", preprocessedText[1]);
+                                Log.i("[RECEIVE_RPM_IN]", preprocessedText[0]);
+                                Log.i("[RECEIVE_RPM_OUT]", preprocessedText[1]);
+                            }
+                            else if(preprocessedText.length == 7) {
+                                txtInRpm1.setText(preprocessedText[0].replaceAll("[^\\d]", ""));
+                                txtOutRpm1.setText(preprocessedText[1].replaceAll("[^\\d]", ""));
+                                txtTemp.setText(preprocessedText[2].replaceAll("[^\\d]", ""));
+                                txtPres1.setText(preprocessedText[3].replaceAll("[^\\d]", ""));
+                                txtPres2.setText(preprocessedText[4].replaceAll("[^\\d]", ""));
+                                txtPres3.setText(preprocessedText[5].replaceAll("[^\\d]", ""));
+                                txtPres4.setText(preprocessedText[6].replaceAll("[^\\d]", ""));
+
+                                Log.i("[RECEIVE_RPM_IN]", preprocessedText[0]);
+                                Log.i("[RECEIVE_RPM_OUT]", preprocessedText[1]);
+                                Log.i("[RECEIVE_TEMP]", preprocessedText[2]);
+                                Log.i("[RECEIVE_PRES_1]", preprocessedText[3]);
+                                Log.i("[RECEIVE_PRES_2]", preprocessedText[4]);
+                                Log.i("[RECEIVE_PRES_3]", preprocessedText[5]);
+                                Log.i("[RECEIVE_PRES_4]", preprocessedText[6]);
                             }
                         }
                     }
@@ -284,7 +306,8 @@ public class MainActivity extends AppCompatActivity implements PDFUtility.OnDocu
         }
     }
 
-    public void executeDownload(String unitNumber, String typeTransmission) {
+    public void executeDownload(String customerName, String location, String PONumber,
+                                String unitNumber, String typeTransmission) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             setPermission();
             return;
@@ -298,12 +321,18 @@ public class MainActivity extends AppCompatActivity implements PDFUtility.OnDocu
         Cursor cursor = dbHandler.fetch();
 
         while(!cursor.isAfterLast()) {
-            String gearPos = cursor.getString(cursor.getColumnIndex(DBHandler.GEAR_POS_COL));
-            String inRpm = cursor.getString(cursor.getColumnIndex(DBHandler.IN_RPM_COL));
-            String outRpm = cursor.getString(cursor.getColumnIndex(DBHandler.OUT_RPM_COL));
-            String timestamp = cursor.getString(cursor.getColumnIndex(DBHandler.TIMESTAMP_COL));
+            String pdfGearPos = cursor.getString(cursor.getColumnIndex(DBHandler.GEAR_POS_COL));
+            String pdfInRpm = cursor.getString(cursor.getColumnIndex(DBHandler.IN_RPM_COL));
+            String pdfOutRpm = cursor.getString(cursor.getColumnIndex(DBHandler.OUT_RPM_COL));
+            String pdfTemp = cursor.getString(cursor.getColumnIndex(DBHandler.TEMP_COL));
+            String pdfPressure1 = cursor.getString(cursor.getColumnIndex(DBHandler.PRESSURE1_COL));
+            String pdfPressure2 = cursor.getString(cursor.getColumnIndex(DBHandler.PRESSURE2_COL));
+            String pdfPressure3 = cursor.getString(cursor.getColumnIndex(DBHandler.PRESSURE3_COL));
+            String pdfPressure4 = cursor.getString(cursor.getColumnIndex(DBHandler.PRESSURE4_COL));
+            String pdfTimestamp = cursor.getString(cursor.getColumnIndex(DBHandler.TIMESTAMP_COL));
 
-            IvecoData ivecoData = new IvecoData(gearPos, inRpm, outRpm, timestamp);
+            IvecoData ivecoData = new IvecoData(pdfGearPos, pdfInRpm, pdfOutRpm,
+                    pdfTemp, pdfPressure1, pdfPressure2, pdfPressure3, pdfPressure4, pdfTimestamp);
             dbResults.add(ivecoData);
             cursor.moveToNext();
         }
@@ -314,7 +343,8 @@ public class MainActivity extends AppCompatActivity implements PDFUtility.OnDocu
         }
 
         try {
-            PDFUtility.createPdf(this,MainActivity.this, dbResults, path,true, unitNumber, typeTransmission);
+            PDFUtility.createPdf(this,MainActivity.this, dbResults, path,
+                    true, customerName, location, PONumber, unitNumber, typeTransmission);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -346,11 +376,16 @@ public class MainActivity extends AppCompatActivity implements PDFUtility.OnDocu
     public void recordData(View view) {
         Toast.makeText(MainActivity.this, "Recorded!", Toast.LENGTH_SHORT).show();
 
-        String gearPos = txtCounter.getText().toString();
-        String inRpm = txtInRpm1.getText().toString();
-        String outRpm = txtOutRpm1.getText().toString();
+        String dbGearPos = txtCounter.getText().toString();
+        String dbInRpm = txtInRpm1.getText().toString();
+        String dbOutRpm = txtOutRpm1.getText().toString();
+        String dbTemp = txtTemp.getText().toString();
+        String dbPres1 = txtPres1.getText().toString();
+        String dbPres2 = txtPres2.getText().toString();
+        String dbPres3 = txtPres3.getText().toString();
+        String dbPres4 = txtPres4.getText().toString();
 
-        dbHandler.addNewData(gearPos, inRpm, outRpm);
+        dbHandler.addNewData(dbGearPos, dbInRpm, dbOutRpm, dbTemp, dbPres1, dbPres2, dbPres3, dbPres4);
     }
 
     public void downloadData(View view) {
@@ -362,18 +397,36 @@ public class MainActivity extends AppCompatActivity implements PDFUtility.OnDocu
         downloadBuilder.setCancelable(true);
         downloadBuilder.setTitle("Additional Data");
 
+        editCustomerName = (EditText) downloadDialogView.findViewById(R.id.edit_customer_name);
+        editLocation = (EditText) downloadDialogView.findViewById(R.id.edit_location);
+        editPONumber = (EditText) downloadDialogView.findViewById(R.id.edit_po_number);
         editUnitNumber = (EditText) downloadDialogView.findViewById(R.id.edit_unit_number);
         editTypeTransmission = (EditText) downloadDialogView.findViewById(R.id.edit_type_transmission);
 
         downloadBuilder.setPositiveButton("Download", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int which) {
+                Boolean isCustomerName = false;
+                Boolean isLocation = false;
+                Boolean isPONumber = false;
                 Boolean isUnitNumber = false;
                 Boolean isTransmissionType = false;
 
+                String strCustomerName = editCustomerName.getText().toString();
+                String strLocation = editLocation.getText().toString();
+                String strPONumber = editPONumber.getText().toString();
                 String strUnitNumber = editUnitNumber.getText().toString();
                 String strTypeTransmission = editTypeTransmission.getText().toString();
 
+                if(!strCustomerName.equalsIgnoreCase("")) {
+                    isCustomerName = true;
+                }
+                if(!strLocation.equalsIgnoreCase("")) {
+                    isLocation = true;
+                }
+                if(!strPONumber.equalsIgnoreCase("")) {
+                    isPONumber = true;
+                }
                 if(!strUnitNumber.equalsIgnoreCase("")) {
                     isUnitNumber = true;
                 }
@@ -381,11 +434,12 @@ public class MainActivity extends AppCompatActivity implements PDFUtility.OnDocu
                     isTransmissionType = true;
                 }
 
-                if((!isUnitNumber) || (!isTransmissionType)) {
+                if((!isCustomerName) || (!isLocation) || (!isPONumber) || (!isUnitNumber) || (!isTransmissionType)) {
                     Toast.makeText(MainActivity.this, "Please enter all the fields", Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    executeDownload(strUnitNumber, strTypeTransmission);
+                    executeDownload(strCustomerName, strLocation, strPONumber,
+                            strUnitNumber, strTypeTransmission);
                 }
                 dialogInterface.dismiss();
             }

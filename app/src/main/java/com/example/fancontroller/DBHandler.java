@@ -17,6 +17,11 @@ public class DBHandler extends SQLiteOpenHelper {
     static final String GEAR_POS_COL = "gear_pos";
     static final String IN_RPM_COL = "in_rpm";
     static final String OUT_RPM_COL = "out_rpm";
+    static final String TEMP_COL = "temperature";
+    static final String PRESSURE1_COL = "pressure_1";
+    static final String PRESSURE2_COL = "pressure_2";
+    static final String PRESSURE3_COL = "pressure_3";
+    static final String PRESSURE4_COL = "pressure_4";
     static final String TIMESTAMP_COL = "timestamp";
 
     public DBHandler(Context context) {
@@ -30,11 +35,17 @@ public class DBHandler extends SQLiteOpenHelper {
                 + GEAR_POS_COL + " TEXT,"
                 + IN_RPM_COL + " TEXT,"
                 + OUT_RPM_COL + " TEXT,"
+                + TEMP_COL + " TEXT,"
+                + PRESSURE1_COL + " TEXT,"
+                + PRESSURE2_COL + " TEXT,"
+                + PRESSURE3_COL + " TEXT,"
+                + PRESSURE4_COL + " TEXT,"
                 + TIMESTAMP_COL + " TEXT)";
         db.execSQL(query);
     }
 
-    public void addNewData(String gearPos, String inRpm, String outRpm) {
+    public void addNewData(String gearPos, String inRpm, String outRpm, String temp, String pressure1,
+                           String pressure2, String pressure3, String pressure4) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
@@ -44,6 +55,11 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(GEAR_POS_COL, gearPos);
         values.put(IN_RPM_COL, inRpm);
         values.put(OUT_RPM_COL, outRpm);
+        values.put(TEMP_COL, temp);
+        values.put(PRESSURE1_COL, pressure1);
+        values.put(PRESSURE2_COL, pressure2);
+        values.put(PRESSURE3_COL, pressure3);
+        values.put(PRESSURE4_COL, pressure4);
         values.put(TIMESTAMP_COL, curr_datetime);
 
         db.insert(TABLE_NAME, null, values);

@@ -51,7 +51,8 @@ final class PDFUtility
 
     static void createPdf(@NonNull Context mContext, OnDocumentClose mCallback,
                           ArrayList<IvecoData> items, @NonNull String filePath,
-                          boolean isPortrait, String unitNumber, String typeTransmission) throws Exception
+                          boolean isPortrait, String customerName, String location,
+                          String PONumber, String unitNumber, String typeTransmission) throws Exception
     {
         if(filePath.equals(""))
         {
@@ -78,12 +79,13 @@ final class PDFUtility
 
         setMetaData(document);
 
-        addHeader(mContext, document, unitNumber, typeTransmission);
+        addHeader(mContext, document, customerName, location, PONumber, unitNumber, typeTransmission);
         addEmptyLine(document, 1);
 
         document.add(createDataTable(items));
 
         addEmptyLine(document,2);
+        addNotes(mContext, document, "Note: ");
 
         document.close();
 
@@ -119,7 +121,8 @@ final class PDFUtility
         document.addHeader("Hadi","IVECO");
     }
 
-    private static void addHeader(Context mContext, Document document, String unitNumber,
+    private static void addHeader(Context mContext, Document document, String customerName,
+                                  String location, String PONumber, String unitNumber,
                                   String typeTransmission) throws Exception
     {
         PdfPTable table = new PdfPTable(1);
@@ -138,11 +141,23 @@ final class PDFUtility
             cell.setPadding(8f);
             cell.setUseAscender(true);
 
-            Paragraph temp = new Paragraph("Performance Transmission Iveco" ,FONT_TITLE);
+            Paragraph temp = new Paragraph("Performance Test" ,FONT_TITLE);
             temp.setAlignment(Element.ALIGN_CENTER);
             cell.addElement(temp);
 
             document.add(new Paragraph(" "));
+
+            temp = new Paragraph("Customer Name : " + customerName ,FONT_SUBTITLE);
+            temp.setAlignment(Element.ALIGN_LEFT);
+            cell.addElement(temp);
+
+            temp = new Paragraph("Location : " + location ,FONT_SUBTITLE);
+            temp.setAlignment(Element.ALIGN_LEFT);
+            cell.addElement(temp);
+
+            temp = new Paragraph("PO Number : " + PONumber ,FONT_SUBTITLE);
+            temp.setAlignment(Element.ALIGN_LEFT);
+            cell.addElement(temp);
 
             temp = new Paragraph("Unit Number : " + unitNumber ,FONT_SUBTITLE);
             temp.setAlignment(Element.ALIGN_LEFT);
@@ -157,11 +172,40 @@ final class PDFUtility
         document.add(table);
     }
 
+    private static void addNotes(Context mContext, Document document, String notes) throws Exception
+    {
+        PdfPTable table = new PdfPTable(1);
+        table.setWidthPercentage(100);
+        table.setWidths(new float[]{7});
+        table.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+        table.getDefaultCell().setVerticalAlignment(Element.ALIGN_CENTER);
+        table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+
+        PdfPCell cell;
+        {
+            /*MIDDLE TEXT*/
+            cell = new PdfPCell();
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setBorder(PdfPCell.NO_BORDER);
+            cell.setPadding(8f);
+            cell.setUseAscender(true);
+
+            Paragraph temp = new Paragraph(notes ,FONT_SUBTITLE);
+            temp.setAlignment(Element.ALIGN_LEFT);
+            cell.addElement(temp);
+
+            document.add(new Paragraph(" "));
+
+            table.addCell(cell);
+        }
+        document.add(table);
+    }
+
     private static PdfPTable createDataTable(ArrayList<IvecoData> dataTable) throws DocumentException
     {
-        PdfPTable table1 = new PdfPTable(4);
+        PdfPTable table1 = new PdfPTable(9);
         table1.setWidthPercentage(100);
-        table1.setWidths(new float[]{1f,1f,1f,2f});
+        table1.setWidths(new float[]{1f,1f,1f,1f,1f,1f,1f,1f,2f});
         table1.setHeaderRows(1);
         table1.getDefaultCell().setVerticalAlignment(Element.ALIGN_CENTER);
         table1.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -181,6 +225,36 @@ final class PDFUtility
             table1.addCell(cell);
 
             cell = new PdfPCell(new Phrase("RPM OUT", FONT_COLUMN));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell.setPadding(4f);
+            table1.addCell(cell);
+
+            cell = new PdfPCell(new Phrase("TEMPERATURE", FONT_COLUMN));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell.setPadding(4f);
+            table1.addCell(cell);
+
+            cell = new PdfPCell(new Phrase("PRESSURE 1", FONT_COLUMN));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell.setPadding(4f);
+            table1.addCell(cell);
+
+            cell = new PdfPCell(new Phrase("PRESSURE 2", FONT_COLUMN));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell.setPadding(4f);
+            table1.addCell(cell);
+
+            cell = new PdfPCell(new Phrase("PRESSURE 3", FONT_COLUMN));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell.setPadding(4f);
+            table1.addCell(cell);
+
+            cell = new PdfPCell(new Phrase("PRESSURE 4", FONT_COLUMN));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cell.setPadding(4f);
@@ -228,6 +302,56 @@ final class PDFUtility
             table1.addCell(cell);
 
             cell = new PdfPCell(new Phrase(ivecoData.getOutRpm(), FONT_CELL));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell.setPaddingLeft(left_right_Padding);
+            cell.setPaddingRight(left_right_Padding);
+            cell.setPaddingTop(top_bottom_Padding);
+            cell.setPaddingBottom(top_bottom_Padding);
+            cell.setBackgroundColor(cell_color);
+            table1.addCell(cell);
+
+            cell = new PdfPCell(new Phrase(ivecoData.getTemp(), FONT_CELL));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell.setPaddingLeft(left_right_Padding);
+            cell.setPaddingRight(left_right_Padding);
+            cell.setPaddingTop(top_bottom_Padding);
+            cell.setPaddingBottom(top_bottom_Padding);
+            cell.setBackgroundColor(cell_color);
+            table1.addCell(cell);
+
+            cell = new PdfPCell(new Phrase(ivecoData.getPressure1(), FONT_CELL));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell.setPaddingLeft(left_right_Padding);
+            cell.setPaddingRight(left_right_Padding);
+            cell.setPaddingTop(top_bottom_Padding);
+            cell.setPaddingBottom(top_bottom_Padding);
+            cell.setBackgroundColor(cell_color);
+            table1.addCell(cell);
+
+            cell = new PdfPCell(new Phrase(ivecoData.getPressure2(), FONT_CELL));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell.setPaddingLeft(left_right_Padding);
+            cell.setPaddingRight(left_right_Padding);
+            cell.setPaddingTop(top_bottom_Padding);
+            cell.setPaddingBottom(top_bottom_Padding);
+            cell.setBackgroundColor(cell_color);
+            table1.addCell(cell);
+
+            cell = new PdfPCell(new Phrase(ivecoData.getPressure3(), FONT_CELL));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell.setPaddingLeft(left_right_Padding);
+            cell.setPaddingRight(left_right_Padding);
+            cell.setPaddingTop(top_bottom_Padding);
+            cell.setPaddingBottom(top_bottom_Padding);
+            cell.setBackgroundColor(cell_color);
+            table1.addCell(cell);
+
+            cell = new PdfPCell(new Phrase(ivecoData.getPressure4(), FONT_CELL));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cell.setPaddingLeft(left_right_Padding);
