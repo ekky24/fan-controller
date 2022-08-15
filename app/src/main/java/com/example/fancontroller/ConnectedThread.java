@@ -41,7 +41,7 @@ class ConnectedThread extends Thread {
     }
 
     public void run(){
-        byte[] buffer = new byte[1024];  // buffer store for the stream
+        byte[] buffer = new byte[256];  // buffer store for the stream
         int bytes; // bytes returned from read()
         long beginMillis = System.currentTimeMillis();
         String readMessage = "";
@@ -64,7 +64,7 @@ class ConnectedThread extends Thread {
                     readMessage = tempMessage;
                 }
 
-                if(System.currentTimeMillis() - beginMillis > 1000 && status) {
+                if(System.currentTimeMillis() - beginMillis > 5 && status) {
 //                    readMessage = readMessage.replaceAll("\\n", "");
                     readMessage = readMessage.replaceAll(" ", "");
 

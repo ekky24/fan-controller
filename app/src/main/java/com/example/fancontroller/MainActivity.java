@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements PDFUtility.OnDocu
     int counter = 0;
 
     public final static String MODULE_MAC_ESP = "7C:9E:BD:F1:58:F2";
-    public final static String MODULE_MAC_VANNO = "24:FD:52:6C:F7:44";
+    public final static String MODULE_MAC_VANNO = "84:CC:A8:7A:3F:4E";
     public final static int REQUEST_ENABLE_BT = 1;
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private final static String TAG = "IVECO";
@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements PDFUtility.OnDocu
         if(bta != null) {
             if(bta.isEnabled()) {
                 BluetoothSocket tmp = null;
-                mmDevice = bta.getRemoteDevice(MODULE_MAC_ESP);
+                mmDevice = bta.getRemoteDevice(MODULE_MAC_VANNO);
 
                 try {
                     tmp = mmDevice.createRfcommSocketToServiceRecord(MY_UUID);
@@ -242,27 +242,39 @@ public class MainActivity extends AppCompatActivity implements PDFUtility.OnDocu
                             String[] preprocessedText = latestText.split(",");
 
                             if(preprocessedText.length == 2) {
-                                txtInRpm1.setText(preprocessedText[0].replaceAll("[^\\d]", ""));
-                                txtOutRpm1.setText(preprocessedText[1].replaceAll("[^\\d]", ""));
-                                Log.i("[RECEIVE_RPM_IN]", preprocessedText[0]);
-                                Log.i("[RECEIVE_RPM_OUT]", preprocessedText[1]);
+                                String tempRpmIn = preprocessedText[0].replaceAll("[^\\d.]", "");
+                                String tempRpmOut = preprocessedText[1].replaceAll("[^\\d.]", "");
+
+                                txtInRpm1.setText(tempRpmIn);
+                                txtOutRpm1.setText(tempRpmOut);
+
+                                Log.i("[RECEIVE_RPM_IN]", tempRpmIn);
+                                Log.i("[RECEIVE_RPM_OUT]", tempRpmOut);
                             }
                             else if(preprocessedText.length == 7) {
-                                txtInRpm1.setText(preprocessedText[0].replaceAll("[^\\d]", ""));
-                                txtOutRpm1.setText(preprocessedText[1].replaceAll("[^\\d]", ""));
-                                txtTemp.setText(preprocessedText[2].replaceAll("[^\\d]", ""));
-                                txtPres1.setText(preprocessedText[3].replaceAll("[^\\d]", ""));
-                                txtPres2.setText(preprocessedText[4].replaceAll("[^\\d]", ""));
-                                txtPres3.setText(preprocessedText[5].replaceAll("[^\\d]", ""));
-                                txtPres4.setText(preprocessedText[6].replaceAll("[^\\d]", ""));
+                                String tempRpmIn = preprocessedText[0].replaceAll("[^\\d.]", "");
+                                String tempRpmOut = preprocessedText[1].replaceAll("[^\\d.]", "");
+                                String tempTemp = preprocessedText[2].replaceAll("[^\\d.]", "");
+                                String tempPres1 = preprocessedText[3].replaceAll("[^\\d.]", "");
+                                String tempPres2 = preprocessedText[4].replaceAll("[^\\d.]", "");
+                                String tempPres3 = preprocessedText[5].replaceAll("[^\\d.]", "");
+                                String tempPres4 = preprocessedText[6].replaceAll("[^\\d.]", "");
 
-                                Log.i("[RECEIVE_RPM_IN]", preprocessedText[0]);
-                                Log.i("[RECEIVE_RPM_OUT]", preprocessedText[1]);
-                                Log.i("[RECEIVE_TEMP]", preprocessedText[2]);
-                                Log.i("[RECEIVE_PRES_1]", preprocessedText[3]);
-                                Log.i("[RECEIVE_PRES_2]", preprocessedText[4]);
-                                Log.i("[RECEIVE_PRES_3]", preprocessedText[5]);
-                                Log.i("[RECEIVE_PRES_4]", preprocessedText[6]);
+                                txtInRpm1.setText(tempRpmIn);
+                                txtOutRpm1.setText(tempRpmOut);
+                                txtTemp.setText(tempTemp);
+                                txtPres1.setText(tempPres1);
+                                txtPres2.setText(tempPres2);
+                                txtPres3.setText(tempPres3);
+                                txtPres4.setText(tempPres4);
+
+                                Log.i("[RECEIVE_RPM_IN]", tempRpmIn);
+                                Log.i("[RECEIVE_RPM_OUT]", tempRpmOut);
+                                Log.i("[RECEIVE_TEMP]", tempTemp);
+                                Log.i("[RECEIVE_PRES_1]", tempPres1);
+                                Log.i("[RECEIVE_PRES_2]", tempPres2);
+                                Log.i("[RECEIVE_PRES_3]", tempPres3);
+                                Log.i("[RECEIVE_PRES_4]", tempPres4);
                             }
                         }
                     }
