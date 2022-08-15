@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements PDFUtility.OnDocu
         if(bta != null) {
             if(bta.isEnabled()) {
                 BluetoothSocket tmp = null;
-                mmDevice = bta.getRemoteDevice(MODULE_MAC_VANNO);
+                mmDevice = bta.getRemoteDevice(MODULE_MAC_ESP);
 
                 try {
                     tmp = mmDevice.createRfcommSocketToServiceRecord(MY_UUID);
